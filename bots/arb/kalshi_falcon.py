@@ -7,14 +7,16 @@ import base64
 import re
 import warnings
 from datetime import datetime
+from pathlib import Path
 from dotenv import load_dotenv
 from cryptography.hazmat.primitives import serialization, hashes
 from cryptography.hazmat.primitives.asymmetric import padding
 
 warnings.filterwarnings("ignore")
 
-# Load Environment
-load_dotenv(dotenv_path='/Users/protoned/kalshi-bot/.env')
+# Load Environment (repo root, same directory as .env.example)
+REPO_ROOT = Path(__file__).resolve().parents[2]
+load_dotenv(dotenv_path=REPO_ROOT / ".env")
 TELEGRAM_BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
 TELEGRAM_CHAT_ID = os.getenv("TELEGRAM_CHAT_ID")
 KALSHI_KEY_ID = os.getenv("KALSHI_KEY_ID")
@@ -83,7 +85,7 @@ def get_coinbase_spot():
     return 0.0
 
 def check_daily_spend(cost):
-    log_file = '/Users/protoned/kalshi-bot/falcon_state.json'
+    log_file = REPO_ROOT / "falcon_state.json"
     today = datetime.now().strftime('%Y-%m-%d')
     
     if os.path.exists(log_file):

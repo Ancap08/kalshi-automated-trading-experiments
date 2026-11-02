@@ -12,12 +12,14 @@ import base64
 import ollama
 import re
 from datetime import datetime
+from pathlib import Path
 from dotenv import load_dotenv
 from cryptography.hazmat.primitives import serialization, hashes
 from cryptography.hazmat.primitives.asymmetric import padding
 
-# Load Environment
-load_dotenv(dotenv_path='/Users/protoned/kalshi-bot/.env')
+# Load Environment (repo root, same directory as .env.example)
+REPO_ROOT = Path(__file__).resolve().parents[2]
+load_dotenv(dotenv_path=REPO_ROOT / ".env")
 TELEGRAM_BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
 TELEGRAM_CHAT_ID = os.getenv("TELEGRAM_CHAT_ID")
 
@@ -73,7 +75,7 @@ def kalshi_request(method, endpoint, payload=None):
         return requests.post(url, headers=headers, json=payload)
 
 def check_daily_spend(cost):
-    log_file = '/Users/protoned/kalshi-bot/lobster_state.json'
+    log_file = REPO_ROOT / "lobster_state.json"
     today = datetime.now().strftime('%Y-%m-%d')
     
     if os.path.exists(log_file):
@@ -130,7 +132,7 @@ def run_lobster():
             yes_mid_cents = int((yes_bid + yes_ask) / 2)
 
             # 1. READ THE MACRO SENTIMENT
-            sentiment_file = '/Users/protoned/kalshi-bot/market_sentiment.txt'
+            sentiment_file = REPO_ROOT / "market_sentiment.txt"
             sentiment_context = "No recent macro data available."
             if os.path.exists(sentiment_file):
                 with open(sentiment_file, 'r') as f:
@@ -188,7 +190,7 @@ def run_lobster():
                     print(alert)
                     send_telegram(alert)
                     
-                    with open('/Users/protoned/kalshi-bot/lobster_decisions.log', 'a') as log:
+                    with open(REPO_ROOT / "lobster_decisions.log", "a") as log:
                         log.write(f"{datetime.now().isoformat()} | {ticker} | LLM:{llm_prob}% | MID:{yes_mid_cents}c | BOUGHT {shares_to_buy}\n")
 
 if __name__ == "__main__":

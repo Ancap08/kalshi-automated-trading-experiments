@@ -7,6 +7,7 @@ import uuid
 import base64
 import warnings
 from datetime import datetime, timezone
+from pathlib import Path
 from dotenv import load_dotenv
 from cryptography.hazmat.primitives import serialization, hashes
 from cryptography.hazmat.primitives.asymmetric import padding
@@ -15,7 +16,8 @@ warnings.filterwarnings("ignore")
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 # --- 1. Environment & Auth Setup ---
-load_dotenv(dotenv_path='/Users/protoned/kalshi-bot/.env')
+REPO_ROOT = Path(__file__).resolve().parents[2]
+load_dotenv(dotenv_path=REPO_ROOT / ".env")
 TELEGRAM_BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
 TELEGRAM_CHAT_ID = os.getenv("TELEGRAM_CHAT_ID")
 KALSHI_KEY_ID = os.getenv("KALSHI_KEY_ID")
